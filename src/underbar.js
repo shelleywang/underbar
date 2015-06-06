@@ -252,11 +252,25 @@
   //     bla: "even more stuff"
   //   }); // obj1 now contains key1, key2, key3 and bla
   _.extend = function(obj) {
+      for (var i = 1; i<arguments.length; i++) {
+        for (var x in arguments[i]) {
+          obj[x] = arguments[i][x];
+        }
+      }
+      return obj;
+
   };
 
   // Like extend, but doesn't ever overwrite a key that already
   // exists in obj
   _.defaults = function(obj) {
+    for (var i = 1; i<arguments.length; i++) {
+        for (var x in arguments[i]) {
+          if (obj[x] ==null) 
+            obj[x] = arguments[i][x];
+        }
+      }
+      return obj;
   };
 
 
@@ -300,6 +314,18 @@
   // already computed the result for the given argument and return that value
   // instead if possible.
   _.memoize = function(func) {
+    var results = {};
+    var result;
+
+    return function() {
+      if (results[arguments[0]] == null) {
+        result = func.apply(this, arguments);
+        results[arguments[0]] = result;
+      } else {
+        result = results[arguments[0]];
+      }
+      return result;
+    }
   };
 
   // Delays a function for the given number of milliseconds, and then calls
@@ -309,6 +335,8 @@
   // parameter. For example _.delay(someFunction, 500, 'a', 'b') will
   // call someFunction('a', 'b') after 500ms
   _.delay = function(func, wait) {
+      window.setTimeout.apply(this,arguments);
+    
   };
 
 
@@ -323,6 +351,19 @@
   // input array. For a tip on how to make a copy of an array, see:
   // http://mdn.io/Array.prototype.slice
   _.shuffle = function(array) {
+    var newarr = array.slice();
+
+    // I'm using the Fisher-Yates shuffle algorithm: 
+    //http://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
+
+    for (var i = newarr.length - 1; i > 1; i--) {
+        var random = Math.floor(Math.random() * i);
+        var exchangeval = newarr[random];
+        newarr[random] = newarr[i];
+        newarr[i] = exchangeval;
+    }
+
+    return newarr;
   };
 
 
