@@ -378,6 +378,13 @@
   // Calls the method named by functionOrKey on each value in the list.
   // Note: You will need to learn a bit about .apply to complete this.
   _.invoke = function(collection, functionOrKey, args) {
+    return _.map(collection, function(item) {
+      if (typeof functionOrKey === 'string') {
+        return eval('"'+item+'".'+functionOrKey+'()');
+      } else {
+        return functionOrKey.apply(item);
+      }
+    });
   };
 
   // Sort the object's values by a criterion produced by an iterator.
@@ -385,6 +392,7 @@
   // of that string. For example, _.sortBy(people, 'name') should sort
   // an array of people by their name.
   _.sortBy = function(collection, iterator) {
+
   };
 
   // Zip together two or more arrays with elements of the same index
@@ -400,11 +408,34 @@
   //
   // Hint: Use Array.isArray to check if something is an array
   _.flatten = function(nestedArray, result) {
+    var newArray = [];
+
+    _.each(nestedArray, function(item) {
+      if (Array.isArray(item)) {
+        newArray = newArray.concat(_.flatten(item));
+      } else {
+        newArray.push(item);
+      }
+    });
+
+    return newArray;
   };
 
   // Takes an arbitrary number of arrays and produces an array that contains
   // every item shared between all the passed-in arrays.
   _.intersection = function() {
+    var allItems = {};
+    _.each(arguments, function (array) {
+      _.each(array, function (item) {
+        allItems[item] ? allItems[item]++ : allItems[item] = 1;
+      });
+    });
+    var sharedItems = [];
+    _.each(allItems, function(item, key) {
+      if (item === arguments.length-1) sharedItems.push(key);
+    });
+
+    return sharedItems;
   };
 
   // Take the difference between one array and a number of other arrays.
