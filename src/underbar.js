@@ -393,6 +393,7 @@
   // an array of people by their name.
   _.sortBy = function(collection, iterator) {
 
+
   };
 
   // Zip together two or more arrays with elements of the same index
@@ -401,6 +402,16 @@
   // Example:
   // _.zip(['a','b','c','d'], [1,2,3]) returns [['a',1], ['b',2], ['c',3], ['d',undefined]]
   _.zip = function() {
+    var result = [];
+    _.each(arguments[0], function(item,index) {
+      result[index] = [item];
+    });
+    _.each(Array.prototype.slice.call(arguments, 1), function(array) {
+      for (var i = 0; i< result.length; i++) {
+        array[i] ? result[i].push(array[i]) : result[i].push(undefined);
+      }
+    });
+    return result;
   };
 
   // Takes a multidimensional array and converts it to a one-dimensional array.
@@ -441,6 +452,20 @@
   // Take the difference between one array and a number of other arrays.
   // Only the elements present in just the first array will remain.
   _.difference = function(array) {
+    var allItems = {};
+    _.each(arguments[0], function(item) {
+      allItems[item] = 1;
+    })
+    _.each(Array.prototype.slice.call(arguments, 1), function (array) {
+      _.each(array, function (item) {
+        if (allItems[item]) allItems[item]++;
+      });
+    });
+    var sharedItems = [];
+    _.each(allItems, function(item, key) {
+      if (item === 1) sharedItems.push(+key);
+    });
+    return sharedItems;
   };
 
   // Returns a function, that, when invoked, will only be triggered at most once
@@ -449,5 +474,7 @@
   //
   // Note: This is difficult! It may take a while to implement.
   _.throttle = function(func, wait) {
+
+
   };
 }());
